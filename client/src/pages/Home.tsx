@@ -128,7 +128,7 @@ const technicalData = {
     '"web": "React, Node.js, HTML/CSS"',
     '"data": "MySQL, SQLite, Supabase"',
     '"hosting": "Vercel, Hostinger, Netlify"',
-    '"tools": "Git, VS Code, PowerShell"',
+    '"tools": "Git, Github, VS Code"',
   ],
   Education: [
     '"degree": "Bachelor of Science in Computer Science"',
