@@ -495,11 +495,6 @@ async function startServer() {
     const smtpPassword =
       process.env.GMAIL_APP_PASSWORD?.replace(/\s+/g, "");
 
-    const to =
-      process.env.CONTACT_TO_EMAIL ||
-      "duquebjay@gmail.com";
-
-
     // Check SMTP configuration
     if (!smtpUser || !smtpPassword) {
       console.error(
@@ -528,21 +523,19 @@ async function startServer() {
       });
 
 
-      const html = createContactEmail({
-        email: cleanEmail,
-        subject: cleanSubject,
-        message: cleanMessage,
-      });
+      const safeEmail = escapeHtml(cleanEmail);
+      const safeSubject = escapeHtml(cleanSubject);
+      const safeMessage = escapeHtml(cleanMessage).replace(/\n/g, "<br>");
 
 
       await transporter.sendMail({
-        from: `"Bjay Duque Portfolio" <${smtpUser}>`,
-        to,
+        from: process.env.GMAIL_USER || "duquebjay@gmail.com",
+        to: process.env.CONTACT_TO_EMAIL || "duquebjay@gmail.com",
 
         // Clicking Reply in Gmail will reply directly to the visitor
         replyTo: cleanEmail,
 
-        subject: `[Portfolio] ${cleanSubject}`,
+        subject: `Portfolio Contact: ${safeSubject}`,
 
         // Plain-text fallback
         text: `
@@ -561,8 +554,7 @@ Computer Science · Builder
 Portfolio Contact
         `.trim(),
 
-        // Styled HTML email
-        html,
+        html: `<p><strong>From:</strong> ${safeEmail}</p><p>${safeMessage}</p>`,
       });
 
 
