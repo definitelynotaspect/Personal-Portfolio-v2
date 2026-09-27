@@ -6,6 +6,8 @@ import {
   Github,
   Linkedin,
   Mail,
+  Menu,
+  X,
   Moon,
   Sun,
   Terminal,
@@ -40,7 +42,7 @@ const projects = [
     number: "03",
     kind: "DIGITAL DESIGN",
     title: "My Personal Portfolio",
-    text: "This website is a formal, professional portfolio designed to showcase my background, skills, and work history.",
+    text: "This website is a formal, professional portfolio designed to showcase my educational background, skills, and projects.",
     tags: ["HTML", "CSS", "JavaScript"],
     tone: "sky",
     image: "/assets/personal-portfolio.png",
@@ -51,7 +53,7 @@ const projects = [
     number: "04",
     kind: "FREELANCE",
     title: "Personal Band Portfolio",
-    text: "An enterprise-style lab exploring domains, policies, DNS, and the quiet infrastructure that keeps organizations moving.",
+    text: "A personal frontend band portfolio showcasing Jairus Guirao’s journey, skills, and background in the music and band industry.",
     tags: ["HTML", "CSS", "JavaScript"],
     tone: "rust",
     image: "/assets/band-portfolio.png",
@@ -62,7 +64,7 @@ const projects = [
     number: "05",
     kind: "FREELANCE",
     title: "Personal Basketball Portfolio",
-    text: "A data storytelling tool that turns clustering experiments into a clearer path from raw evidence to human insight.",
+    text: "A personal frontend basketball portfolio showcasing James Coliamco Lee’s journey, skills, and background in the sport.",
     tags: ["HTML", "CSS", "JavaScript"],
     tone: "ochre",
     image: "/assets/project4.png",
@@ -124,9 +126,9 @@ const certifications = [
 
 const technicalData = {
   Skills: [
-    '"languages": "JavaScript, Java, C#"',
-    '"web": "React, Node.js, HTML/CSS"',
-    '"data": "MySQL, SQLite, Supabase"',
+    '"frontend": "React, JavaScript, HTML/CSS"',
+    '"backend": "Node.js, Express.js, PHP"',
+    '"database": "MySQL, SQLite, Supabase"',
     '"hosting": "Vercel, Hostinger, Netlify"',
     '"tools": "Git, Github, VS Code"',
   ],
@@ -166,6 +168,8 @@ export default function Home() {
 
   const [tab, setTab] =
     useState<keyof typeof technicalData>("Skills");
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [selectedItem, setSelectedItem] =
     useState<SelectedItem>(null);
@@ -348,42 +352,44 @@ export default function Home() {
           ===================================================== */}
 
       <header className="site-header container">
+        <button
+          className="mobile-menu-toggle"
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
+          aria-controls="primary-navigation"
+        >
+          {menuOpen ? <X size={20} strokeWidth={1.8} /> : <Menu size={20} strokeWidth={1.8} />}
+        </button>
+
         <a
           className="wordmark"
           href="#top"
           aria-label="Bjay Duque portfolio home"
+          onClick={() => setMenuOpen(false)}
         >
           <span>BJAY DUQUE</span>
         </a>
 
         <nav
-          className="desktop-nav"
+          id="primary-navigation"
+          className={`desktop-nav${menuOpen ? " mobile-menu-open" : ""}`}
           aria-label="Primary navigation"
         >
-          <a href="#about">About</a>
-          <a href="#projects">Projects</a>
-          <a href="#certifications">
-            Credentials
-          </a>
-          <a href="#contact">Contact</a>
+          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+          <a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a>
+          <a href="#certifications" onClick={() => setMenuOpen(false)}>Credentials</a>
+          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
         </nav>
 
         <button
           className="theme-toggle"
           onClick={toggleTheme}
-          aria-label={`Switch to ${
-            theme === "dark" ? "light" : "dark"
-          } mode`}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         >
-          {theme === "dark" ? (
-            <Sun size={16} />
-          ) : (
-            <Moon size={16} />
-          )}
-
-          <span>
-            {theme === "dark" ? "Light" : "Dark"}
-          </span>
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          <span>{theme === "dark" ? "Light" : "Dark"}</span>
         </button>
       </header>
 
@@ -525,10 +531,11 @@ export default function Home() {
               </h2>
 
               <p>
-                I’m a computer science student who loves
-                building web apps, but I’m even happier
-                when I’m working with networking,
-                hardware, and software troubleshooting.
+                I'm a Computer Science student who's always
+                curious about technology and passionate about
+                learning, and eager to explore new ideas and
+                build creative projects.
+
               </p>
 
               <p>

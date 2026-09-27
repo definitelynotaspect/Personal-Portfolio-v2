@@ -1943,3 +1943,106 @@ h2 em {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+   MOBILE MENU — left-aligned hamburger, matching the site
+   ========================================================= */
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-menu-toggle:focus-visible {
+  color: var(--accent);
+}
+
+.mobile-menu-toggle:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 850px) {
+  .site-header {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+    order: 0;
+    margin-left: -8px;
+  }
+
+  .site-header .wordmark {
+    order: 1;
+    margin-right: auto;
+  }
+
+  .site-header .theme-toggle {
+    order: 2;
+    flex-shrink: 0;
+  }
+
+  .site-header .desktop-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    z-index: 30;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    background: var(--paper, var(--bg));
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+    font: 500 12px/1.4 "IBM Plex Mono", monospace;
+  }
+
+  .site-header .desktop-nav.mobile-menu-open {
+    display: flex;
+  }
+
+  .site-header .desktop-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .site-header .desktop-nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .site-header .desktop-nav a:hover,
+  .site-header .desktop-nav a:focus-visible {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+  }
+}
+
+@media (max-width: 380px) {
+  .site-header {
+    gap: 8px;
+  }
+
+  .mobile-menu-toggle {
+    margin-left: -5px;
+  }
+}
