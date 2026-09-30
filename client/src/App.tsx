@@ -1,7 +1,7 @@
 // Style note: Quiet Terminal shell — warm editorial surfaces, asymmetric structure, precise mono metadata, and a restrained burnt-sampaguita signal.
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Credentials from "./pages/Credentials";
+import Credentials from "./pages/credentials";
 import Projects from "./pages/Projects";
 import { useLocation } from "wouter";
 
