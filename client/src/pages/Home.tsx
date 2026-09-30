@@ -1,5 +1,6 @@
-import { useLayoutEffect, useState, type FormEvent, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { flushSync } from "react-dom";
+import { Link } from "wouter";
 import {
   ArrowUpRight,
   Copy,
@@ -11,11 +12,17 @@ import {
   Moon,
   Sun,
   Terminal,
+  UserRound,
+  FolderKanban,
+  Award,
+  BadgeCheck,
+  House,
+  FileText,
 } from "lucide-react";
 
-const portrait = "/assets/bjay-ascii-lowres.png";
+const portrait = "/assets/bjayduque.png";
 
-const projects = [
+export const projects = [
   {
     number: "01",
     kind: "SOFTWARE ENGINEERING 2",
@@ -34,7 +41,7 @@ const projects = [
     text: "Welcome to HealthHub, the official healthcare and clinic management system designed exclusively for Interworld Colleges Foundation, Inc.",
     tags: ["React", "Express", "MySQL"],
     tone: "lilac",
-    image: "/assets/project3.png",
+    image: "/assets/HealthHub.png",
     details:
       "HealthHub is a secure, all-in-one digital platform built to streamline campus medical services. By shifting from traditional paper records to an advanced digital infrastructure, our system ensures that students, faculty, and administrative staff receive prompt, organized, and high-quality healthcare support.",
   },
@@ -67,13 +74,13 @@ const projects = [
     text: "A personal frontend basketball portfolio showcasing James Coliamco Lee’s journey, skills, and background in the sport.",
     tags: ["HTML", "CSS", "JavaScript"],
     tone: "ochre",
-    image: "/assets/project4.png",
+    image: "/assets/basketball-portfolio.png",
     details:
       "Here is a professional, comprehensive basketball portfolio template tailored for James Coliamco Lee. This layout highlights on-court production, physical attributes, and versatile skillset.",
   },
 ];
 
-const certifications = [
+export const certifications = [
   {
     number: "01",
     category: "ACADEMIC RECOGNITION",
@@ -81,7 +88,7 @@ const certifications = [
     title: "Dean's Lister · 1st Year Gold Medalist",
     year: "2024 — 2025",
     code: "ICF / 2024-2025",
-    image: "/assets/gold1.jpg",
+    image: "/assets/1stYearGold.jpg",
     verify:
       "Academic recognition from Interworld Colleges Foundation, Inc.",
     status: "DOCUMENTED",
@@ -93,7 +100,7 @@ const certifications = [
     title: "Dean's Lister · 2nd Year Gold Medalist",
     year: "2025 — 2026",
     code: "ICF / 2025-2026",
-    image: "/assets/gold2.jpg",
+    image: "/assets/2ndYearGold.jpg",
     verify:
       "Academic recognition from Interworld Colleges Foundation, Inc.",
     status: "DOCUMENTED",
@@ -105,7 +112,7 @@ const certifications = [
     title: "Robotics Training",
     year: "2026",
     code: "SAPIENTA / 2026",
-    image: "/assets/certificate33.jpg",
+    image: "/assets/RoboticsCertificate.jpg",
     verify:
       "Robotics certification from Sapienta Ideation Center.",
     status: "DOCUMENTED",
@@ -117,9 +124,69 @@ const certifications = [
     title: "Coding Fundamentals",
     year: "2022",
     code: "GRASSHOPPER / 2022",
-    image: "/assets/certificate6.png.png",
+    image: "/assets/GrasshopperCertificate.png",
     verify:
       "Coding fundamentals certification from Grasshopper.",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "05",
+    category: "ARTIFICIAL INTELLIGENCE",
+    issuer: "Cisco Networking Academy",
+    title: "Introduction to Modern AI",
+    year: "September 2026",
+    code: "CISCO / 2026",
+    image: "/assets/IntroductionToModernAI.png",
+    verify: "Student-level credential for completing Cisco Networking Academy's Introduction to Modern AI course.",
+    credentialUrl: "https://www.credly.com/badges/0b527107-9300-4ed9-9224-ca54212fda6e/public_url",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "06",
+    category: "PROGRAMMING",
+    issuer: "HackerRank",
+    title: "Java (Basic)",
+    year: "September 2026",
+    code: "HACKERRANK / JAVA",
+    image: "/assets/JavaBasics.png",
+    verify: "HackerRank skill certification for Java programming fundamentals.",
+    credentialUrl: "https://www.hackerrank.com/certificates/71ea5271dc59",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "07",
+    category: "PROGRAMMING",
+    issuer: "HackerRank",
+    title: "Node.js (Intermediate)",
+    year: "2026",
+    code: "HACKERRANK / NODEJS",
+    image: "/assets/Nodejs.png",
+    verify: "HackerRank skill certification for intermediate Node.js development.",
+    credentialUrl: "https://www.hackerrank.com/certificates/9393a3506d1a",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "08",
+    category: "SYSTEMS",
+    issuer: "Cisco Networking Academy",
+    title: "Operating Systems Basics",
+    year: "September 2026",
+    code: "CISCO / 2026",
+    image: "/assets/OperatingSytemsCertificate.jpg",
+    verify: "Student-level credential for completing Cisco Networking Academy's Operating Systems Basics course.",
+    credentialUrl: "https://www.credly.com/badges/4752102e-0c2f-4218-837a-53585cb7317d/public_url",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "09",
+    category: "FRONTEND DEVELOPMENT",
+    issuer: "HackerRank",
+    title: "React (Basic)",
+    year: "September 2026",
+    code: "HACKERRANK / REACT",
+    image: "/assets/ReactBasics.png",
+    verify: "HackerRank skill certification for React fundamentals.",
+    credentialUrl: "https://www.hackerrank.com/certificates/ab2dd5b7ccfe",
     status: "DOCUMENTED",
   },
 ];
@@ -171,6 +238,8 @@ export default function Home() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const [activeSection, setActiveSection] = useState("top");
+
   const [selectedItem, setSelectedItem] =
     useState<SelectedItem>(null);
 
@@ -188,6 +257,24 @@ export default function Home() {
 
     localStorage.setItem("barong-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const sections = ["top", "about", "projects", "certifications", "contact"];
+    const updateActiveSection = () => {
+      const current = sections.reduce((closest, id) => {
+        const element = document.getElementById(id);
+        if (!element) return closest;
+        return Math.abs(element.getBoundingClientRect().top - 130) < Math.abs((document.getElementById(closest)?.getBoundingClientRect().top ?? Infinity) - 130)
+          ? id
+          : closest;
+      }, "top");
+      setActiveSection(current);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    return () => window.removeEventListener("scroll", updateActiveSection);
+  }, []);
 
   const toggleTheme = (
     event: MouseEvent<HTMLButtonElement>,
@@ -239,6 +326,7 @@ export default function Home() {
   };
 
   const scrollTo = (id: string) => {
+    setActiveSection(id.replace("#", ""));
     document.querySelector(id)?.scrollIntoView({
       behavior: "smooth",
     });
@@ -347,6 +435,78 @@ export default function Home() {
         aria-hidden="true"
       />
 
+      <aside className={`portfolio-rail ${menuOpen ? "mobile-nav-open" : ""}`} aria-label="Portfolio navigation">
+        <button
+          className="rail-mobile-close"
+          type="button"
+          onClick={() => setMenuOpen(false)}
+          aria-label="Close navigation menu"
+        >
+          <X size={19} />
+        </button>
+        <a className="rail-brand" href="#top" onClick={() => { setMenuOpen(false); scrollTo("#top"); }}>
+          <span className="rail-monogram">BD</span>
+          <span>
+            <strong>Bjay Duque</strong>
+            <small>CS student / builder</small>
+          </span>
+        </a>
+
+        <a className="rail-contact" href="#contact" onClick={() => { setMenuOpen(false); scrollTo("#contact"); }}>
+          <Mail size={15} />
+          Start a conversation
+          <ArrowUpRight size={14} />
+        </a>
+
+        <nav className="rail-nav" aria-label="Portfolio sections">
+          <span className="rail-label">Explore</span>
+          {[
+            { id: "top", label: "Home", icon: House, count: "01" },
+            { id: "about", label: "About me", icon: UserRound, count: "02" },
+            { id: "projects", label: "Projects", icon: FolderKanban, count: String(projects.length).padStart(2, "0") },
+            { id: "certifications", label: "Credentials", icon: Award, count: String(certifications.length).padStart(2, "0") },
+          ].map(({ id, label, icon: NavIcon, count }) => {
+            return (
+              <a
+                className={`rail-link ${id === "top" ? "active" : ""}`}
+                href={id === "about" ? "/about" : id === "certifications" ? "/credentials" : id === "projects" ? "/projects" : `#${id}`}
+                key={id}
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (id !== "about" && id !== "certifications" && id !== "projects") scrollTo(`#${id}`);
+                }}
+              >
+                <NavIcon size={16} strokeWidth={1.7} />
+                <span>{label}</span>
+                <small>{count}</small>
+              </a>
+            );
+          })}
+        </nav>
+
+        <div className="rail-footer">
+          <a
+            className="rail-email"
+            href="mailto:duquebjay@gmail.com"
+            aria-label="Email Bjay Duque at duquebjay@gmail.com"
+          >
+            <Mail size={14} />
+            <span>duquebjay@gmail.com</span>
+          </a>
+          <span><i /> Available for thoughtful work</span>
+          <div>
+            
+            <a href="https://github.com/definitelynotaspect" target="_blank" rel="noreferrer"><Github size={15} /></a>
+            <a href="http://linkedin.com/in/bjay-duque-8aa7423aa/" target="_blank" rel="noreferrer"><Linkedin size={15} /></a>
+            <button className="rail-theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
+              {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="page-content">
+
       {/* =====================================================
           HEADER
           ===================================================== */}
@@ -377,9 +537,9 @@ export default function Home() {
           className={`desktop-nav${menuOpen ? " mobile-menu-open" : ""}`}
           aria-label="Primary navigation"
         >
-          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-          <a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a>
-          <a href="#certifications" onClick={() => setMenuOpen(false)}>Credentials</a>
+          <Link href="/about" onClick={() => setMenuOpen(false)}>About</Link>
+          <Link href="/projects" onClick={() => setMenuOpen(false)}>Projects</Link>
+          <Link href="/credentials" onClick={() => setMenuOpen(false)}>Credentials</Link>
           <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
         </nav>
 
@@ -440,32 +600,17 @@ export default function Home() {
                 Read the work{" "}
                 <ArrowUpRight size={16} />
               </a>
-            </div>
 
-            <div className="social-row">
               <a
-                href="https://github.com/definitelynotaspect"
+                className="button button-quiet"
+                href="/assets/Bjay%20Duque%20Resume.pdf"
                 target="_blank"
                 rel="noreferrer"
               >
-                <Github size={15} />
-                GitHub
+                Resume <FileText size={15} />
               </a>
-
-              <a
-                href="http://linkedin.com/in/bjay-duque-8aa7423aa/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Linkedin size={15} />
-                LinkedIn
-              </a>
-
-              <span className="availability">
-                <i />
-                Available for thoughtful work
-              </span>
             </div>
+
           </div>
 
           <aside
@@ -662,7 +807,7 @@ export default function Home() {
         </section>
 
 
-        {/* =====================================================
+                {/* =====================================================
             PROJECTS
             ===================================================== */}
 
@@ -682,77 +827,55 @@ export default function Home() {
             </div>
 
             <span className="count">
-              05 / showing the working parts
+              03 / SELECTED PROJECTS
             </span>
           </div>
 
-          <div className="project-grid">
-            {projects.map((project) => (
-              <button
-                className={`project-card ${project.tone}`}
-                type="button"
-                onClick={() =>
-                  setSelectedItem(project)
-                }
-                key={project.number}
-              >
-                <div className="project-visual">
-                  {project.image ? (
+          <div className="home-project-preview">
+            <div className="home-project-group">
+              <div className="home-project-group-label">
+                <span>Featured projects</span>
+                <small>03</small>
+              </div>
+
+              <div className="projects-list">
+                {projects.slice(0, 3).map((project) => (
+                  <button
+                    className="project-list-row home-project-row"
+                    type="button"
+                    key={project.number}
+                    onClick={() => setSelectedItem(project)}
+                  >
                     <img
-                      className="project-image"
                       src={project.image}
                       alt={`${project.title} preview`}
-                      onError={(event) => {
-                        event.currentTarget.style.display =
-                          "none";
-                      }}
                     />
-                  ) : (
-                    <span className="visual-number">
-                      {project.number}
-                    </span>
-                  )}
 
-                  <span className="visual-glyph">
-                    {project.number === "01"
-                      ? "∿"
-                      : project.number === "02"
-                        ? "▦"
-                        : project.number === "03"
-                          ? "⌁"
-                          : project.number === "04"
-                            ? "◌"
-                            : "⌘"}
-                  </span>
+                    <div>
+                      <h2>{project.title}</h2>
+                      <p>{project.text}</p>
+                    </div>
 
-                  <span className="visual-caption">
-                    open / read →
-                  </span>
-                </div>
-
-                <div className="project-body">
-                  <div className="project-meta">
-                    <span>
+                    <span className="project-list-kind">
                       {project.kind}
                     </span>
 
-                    <ArrowUpRight size={14} />
-                  </div>
+                    <ArrowUpRight
+                      className="project-list-arrow"
+                      size={16}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                  <h3>{project.title}</h3>
-
-                  <p>{project.text}</p>
-
-                  <div className="tag-row">
-                    {project.tags.map((tag) => (
-                      <span key={tag}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </button>
-            ))}
+            <Link
+              className="home-projects-link"
+              href="/projects"
+            >
+              Show all {String(projects.length).padStart(2, "0")} projects
+              <ArrowUpRight size={15} />
+            </Link>
           </div>
         </section>
 
@@ -781,7 +904,7 @@ export default function Home() {
 
             <div className="credentials-intro">
               <span className="count">
-                04 / DOCUMENTED RECORDS
+                {String(certifications.length).padStart(2, "0")} / DOCUMENTED RECORDS
               </span>
 
               <p>
@@ -792,132 +915,26 @@ export default function Home() {
           </div>
 
 
-          {/* Credential terminal */}
-          <div className="credentials-terminal">
-
-            {/* Terminal header */}
-            <div className="credentials-terminal-bar">
-
-              <div className="credentials-terminal-title">
-                <Terminal size={14} />
-
-                <span>
-                  credentials.log
-                </span>
-              </div>
-
-              <div className="credentials-terminal-status">
-                <span className="status-dot" />
-
-                RECORDS AVAILABLE
-              </div>
-            </div>
-
-
-            {/* Credential records */}
-            <div className="credential-list">
-
-              {certifications.map((item) => (
+          <div className="home-credential-preview">
+            <div className="credential-card-grid">
+              {certifications.slice(0, 3).map((item) => (
                 <button
-                  className="credential-row"
+                  className="credential-card"
                   type="button"
                   key={item.number}
-                  onClick={() =>
-                    setSelectedItem(item)
-                  }
+                  onClick={() => setSelectedItem(item)}
                 >
-
-                  {/* Number */}
-                  <div className="credential-number">
-                    {item.number}
-                  </div>
-
-
-                  {/* Credential information */}
-                  <div className="credential-main">
-
-                    <div className="credential-category">
-                      {item.category}
-                    </div>
-
-                    <h3>
-                      {item.title}
-                    </h3>
-
-                    <div className="credential-meta">
-                      <span>
-                        {item.issuer}
-                      </span>
-
-                      <span className="meta-divider">
-                        /
-                      </span>
-
-                      <span>
-                        {item.year}
-                      </span>
-                    </div>
-                  </div>
-
-
-                  {/* Certificate preview */}
-                  <div className="credential-preview">
-
-                    {item.image ? (
-                      <img
-                        src={item.image}
-                        alt={`${item.title} certificate`}
-                      />
-                    ) : (
-                      <div className="credential-preview-empty">
-                        <Terminal size={18} />
-                      </div>
-                    )}
-
-                  </div>
-
-
-                  {/* Status / action */}
-                  <div className="credential-action">
-
-                    <span className="credential-status">
-                      <span className="status-dot" />
-
-                      {item.status}
-                    </span>
-
-                    <span className="credential-open">
-                      VIEW
-                      <ArrowUpRight size={14} />
-                    </span>
-
-                  </div>
-
+                  <span className="credential-card-icon"><BadgeCheck size={22} /></span>
+                  <h3>{item.title}</h3>
+                  <p>{item.issuer}</p>
+                  <span className="credential-card-verify">&lt; view &gt; <ArrowUpRight size={13} /></span>
                 </button>
               ))}
-
             </div>
 
-
-            {/* Terminal footer */}
-            <div className="credentials-terminal-footer">
-
-              <span>
-                <span className="terminal-prompt">
-                  &gt;
-                </span>
-
-                cat ./credentials/*
-              </span>
-
-              <span>
-                {String(
-                  certifications.length,
-                ).padStart(2, "0")}{" "}
-                records
-              </span>
-
-            </div>
+            <Link className="home-credentials-link" href="/credentials">
+              Show all {String(certifications.length).padStart(2, "0")} credentials <ArrowUpRight size={15} />
+            </Link>
           </div>
 
         </section>
@@ -1182,6 +1199,7 @@ export default function Home() {
           </a>
         </span>
       </footer>
+      </div>
     </div>
   );
 }
