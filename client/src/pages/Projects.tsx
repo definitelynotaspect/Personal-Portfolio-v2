@@ -105,10 +105,40 @@ export default function Projects() {
             <small>02</small>
           </Link>
 
+          <Link className="rail-link" href="/#tech-stack">
+            <FolderKanban size={16} strokeWidth={1.7} />
+            <span>Tech stack</span>
+            <small>03</small>
+          </Link>
+
+          <Link className="rail-link" href="/about">
+            <UserRound size={16} strokeWidth={1.7} />
+            <span>Experience</span>
+            <small>04</small>
+          </Link>
+
           <Link className="rail-link active" href="/projects">
             <FolderKanban size={16} strokeWidth={1.7} />
             <span>Projects</span>
             <small>{String(projects.length).padStart(2, "0")}</small>
+          </Link>
+
+          <Link className="rail-link" href="/projects">
+            <FolderKanban size={16} strokeWidth={1.7} />
+            <span>Services / freelance</span>
+            <small>06</small>
+          </Link>
+
+          <Link className="rail-link" href="/about">
+            <UserRound size={16} strokeWidth={1.7} />
+            <span>Personal</span>
+            <small>07</small>
+          </Link>
+
+          <Link className="rail-link" href="/#contact">
+            <Mail size={16} strokeWidth={1.7} />
+            <span>Contact</span>
+            <small>08</small>
           </Link>
 
           <Link className="rail-link" href="/credentials">

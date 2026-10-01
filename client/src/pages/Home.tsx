@@ -18,6 +18,9 @@ import {
   BadgeCheck,
   House,
   FileText,
+  Code2,
+  Hammer,
+  Music2,
 } from "lucide-react";
 
 const portrait = "/assets/bjayduque.png";
@@ -463,17 +466,22 @@ export default function Home() {
           {[
             { id: "top", label: "Home", icon: House, count: "01" },
             { id: "about", label: "About me", icon: UserRound, count: "02" },
+            { id: "tech-stack", label: "Tech stack", icon: Code2, count: "03" },
+            { id: "experience", label: "Experience", icon: UserRound, count: "04", href: "/about" },
             { id: "projects", label: "Projects", icon: FolderKanban, count: String(projects.length).padStart(2, "0") },
+            { id: "services", label: "Services / freelance", icon: Hammer, count: "06", href: "/projects" },
+            { id: "personal", label: "Personal", icon: Music2, count: "07", href: "/about" },
+            { id: "contact", label: "Contact", icon: Mail, count: "08" },
             { id: "certifications", label: "Credentials", icon: Award, count: String(certifications.length).padStart(2, "0") },
-          ].map(({ id, label, icon: NavIcon, count }) => {
+          ].map(({ id, label, icon: NavIcon, count, href }) => {
             return (
               <a
                 className={`rail-link ${id === "top" ? "active" : ""}`}
-                href={id === "about" ? "/about" : id === "certifications" ? "/credentials" : id === "projects" ? "/projects" : `#${id}`}
+                href={href ?? (id === "about" ? "/about" : id === "certifications" ? "/credentials" : id === "projects" ? "/projects" : `#${id}`)}
                 key={id}
                 onClick={() => {
                   setMenuOpen(false);
-                  if (id !== "about" && id !== "certifications" && id !== "projects") scrollTo(`#${id}`);
+                  if (!href && id !== "about" && id !== "certifications" && id !== "projects") scrollTo(`#${id}`);
                 }}
               >
                 <NavIcon size={16} strokeWidth={1.7} />
@@ -485,19 +493,10 @@ export default function Home() {
         </nav>
 
         <div className="rail-footer">
-          <a
-            className="rail-email"
-            href="mailto:duquebjay@gmail.com"
-            aria-label="Email Bjay Duque at duquebjay@gmail.com"
-          >
-            <Mail size={14} />
-            <span>duquebjay@gmail.com</span>
-          </a>
           <span><i /> Available for thoughtful work</span>
           <div>
-            
-            <a href="https://github.com/definitelynotaspect" target="_blank" rel="noreferrer"><Github size={15} /></a>
-            <a href="http://linkedin.com/in/bjay-duque-8aa7423aa/" target="_blank" rel="noreferrer"><Linkedin size={15} /></a>
+            <a href="https://github.com/definitelynotaspect" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={15} /></a>
+            <a href="http://linkedin.com/in/bjay-duque-8aa7423aa/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={15} /></a>
             <button className="rail-theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
               {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
             </button>
@@ -707,7 +706,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="technical-panel">
+            <div id="tech-stack" className="technical-panel">
               <div className="panel-heading">
                 <span>
                   technical_snapshot.json

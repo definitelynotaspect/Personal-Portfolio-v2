@@ -45,7 +45,12 @@ export default function About() {
           <span className="rail-label">Explore</span>
           <Link className="rail-link" href="/"><House size={16} strokeWidth={1.7} /><span>Home</span><small>01</small></Link>
           <Link className="rail-link active" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>About me</span><small>02</small></Link>
+          <Link className="rail-link" href="/#tech-stack"><FolderKanban size={16} strokeWidth={1.7} /><span>Tech stack</span><small>03</small></Link>
+          <Link className="rail-link" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>Experience</span><small>04</small></Link>
           <Link className="rail-link" href="/projects"><FolderKanban size={16} strokeWidth={1.7} /><span>Projects</span><small>{String(projects.length).padStart(2, "0")}</small></Link>
+          <Link className="rail-link" href="/projects"><FolderKanban size={16} strokeWidth={1.7} /><span>Services / freelance</span><small>06</small></Link>
+          <Link className="rail-link" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>Personal</span><small>07</small></Link>
+          <Link className="rail-link" href="/#contact"><Mail size={16} strokeWidth={1.7} /><span>Contact</span><small>08</small></Link>
           <Link className="rail-link" href="/credentials"><Award size={16} strokeWidth={1.7} /><span>Credentials</span><small>{String(certifications.length).padStart(2, "0")}</small></Link>
         </nav>
         <div className="rail-footer">
@@ -76,7 +81,7 @@ export default function About() {
           <header className="about-page-intro">
             <p className="section-index">002 / ABOUT THE BUILDER</p>
             <h1>Bjay Duque</h1>
-            <p className="about-page-role">CS Student</p>
+            <p className="about-page-role">Aspiring Software Developer</p>
           </header>
 
           <div className="about-page-copy">
