@@ -15,12 +15,10 @@ import {
   UserRound,
   FolderKanban,
   Award,
-  BadgeCheck,
   House,
   FileText,
   Code2,
-  Hammer,
-  Music2,
+  Search,
 } from "lucide-react";
 
 const portrait = "/assets/bjayduque.png";
@@ -192,6 +190,42 @@ export const certifications = [
     credentialUrl: "https://www.hackerrank.com/certificates/ab2dd5b7ccfe",
     status: "DOCUMENTED",
   },
+  {
+    number: "10",
+    category: "VERSION CONTROL",
+    issuer: "DataCamp",
+    title: "Introduction to Git",
+    year: "",
+    code: "DATACAMP / GIT",
+    image: "/assets/certificate%20(1)-1.png",
+    verify: "DataCamp statement of accomplishment for Introduction to Git.",
+    credentialUrl: "https://www.datacamp.com/completed/statement-of-accomplishment/course/cd51a3b7b142fe1792d2e4f845d6167054dfcb3d",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "11",
+    category: "DATABASES",
+    issuer: "DataCamp",
+    title: "Introduction to SQL",
+    year: "",
+    code: "DATACAMP / SQL",
+    image: "/assets/certificate%20(2)-1.png",
+    verify: "DataCamp statement of accomplishment for Introduction to SQL.",
+    credentialUrl: "https://www.datacamp.com/completed/statement-of-accomplishment/course/28432345c401f57bfffdec86b20d95b0a76a6f0e",
+    status: "DOCUMENTED",
+  },
+  {
+    number: "12",
+    category: "ARTIFICIAL INTELLIGENCE",
+    issuer: "Mar Wie Ang · AI Dev PH",
+    title: "Fundamentals of AI-Driven Development",
+    year: "",
+    code: "AI DEV PH / AI",
+    image: "/assets/certificate%20ai%20driven.png",
+    verify: "Certificate for completing Fundamentals of AI-Driven Development with Mar Wie Ang · AI Dev PH.",
+    credentialUrl: "https://course.marwieang.com/verify/MWA-F3AB-C7P6",
+    status: "DOCUMENTED",
+  },
 ];
 
 const technicalData = {
@@ -245,6 +279,22 @@ export default function Home() {
 
   const [selectedItem, setSelectedItem] =
     useState<SelectedItem>(null);
+
+  useEffect(() => {
+    if (!selectedItem || !("category" in selectedItem)) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedItem(null);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [selectedItem]);
 
   const [contactStatus, setContactStatus] = useState<
     "idle" | "sending" | "sent" | "error"
@@ -469,10 +519,7 @@ export default function Home() {
             { id: "tech-stack", label: "Tech stack", icon: Code2, count: "03" },
             { id: "experience", label: "Experience", icon: UserRound, count: "04", href: "/about" },
             { id: "projects", label: "Projects", icon: FolderKanban, count: String(projects.length).padStart(2, "0") },
-            { id: "services", label: "Services / freelance", icon: Hammer, count: "06", href: "/projects" },
-            { id: "personal", label: "Personal", icon: Music2, count: "07", href: "/about" },
-            { id: "contact", label: "Contact", icon: Mail, count: "08" },
-            { id: "certifications", label: "Credentials", icon: Award, count: String(certifications.length).padStart(2, "0") },
+            { id: "certifications", label: "Credentials", icon: Award, count: "06" },
           ].map(({ id, label, icon: NavIcon, count, href }) => {
             return (
               <a
@@ -917,17 +964,28 @@ export default function Home() {
           <div className="home-credential-preview">
             <div className="credential-card-grid">
               {certifications.slice(0, 3).map((item) => (
-                <button
+                <div
                   className="credential-card"
-                  type="button"
                   key={item.number}
-                  onClick={() => setSelectedItem(item)}
                 >
-                  <span className="credential-card-icon"><BadgeCheck size={22} /></span>
+                  <button className="credential-card-preview" type="button" onClick={() => setSelectedItem(item)} aria-label={`View ${item.title} certificate`}>
+                    <span className="credential-card-certificate">
+                    {item.image ? (
+                      <img src={item.image} alt={`${item.title} certificate`} loading="lazy" />
+                    ) : (
+                      <span className="credential-card-fallback" aria-label={`${item.title} certificate preview`}>
+                        <strong>{item.issuer}</strong>
+                        <span>Certificate of completion</span>
+                        <small>{item.title}</small>
+                      </span>
+                      )}
+                    <span className="credential-card-zoom" aria-hidden="true"><Search size={15} /></span>
+                    </span>
+                  </button>
                   <h3>{item.title}</h3>
-                  <p>{item.issuer}</p>
-                  <span className="credential-card-verify">&lt; view &gt; <ArrowUpRight size={13} /></span>
-                </button>
+                  <p>{item.issuer}{item.year && <><span aria-hidden="true"> • </span>{item.year}</>}</p>
+                  <a className="credential-card-verify" href={item.credentialUrl ?? item.image} target="_blank" rel="noreferrer">&lt; verify certificate &gt; <ArrowUpRight size={13} /></a>
+                </div>
               ))}
             </div>
 
@@ -1070,7 +1128,7 @@ export default function Home() {
             }
           >
             <article
-              className="detail-modal credential-detail-modal"
+              className={`detail-modal ${"category" in selectedItem ? "certificate-lightbox-panel" : "credential-detail-modal"}`}
               role="dialog"
               aria-modal="true"
               onClick={(event) =>
@@ -1091,7 +1149,7 @@ export default function Home() {
 
 
               {/* Image */}
-              {selectedItem.image && (
+              {selectedItem.image && !("category" in selectedItem) && (
                 <div className="detail-image-frame">
                   <img
                     className="detail-image"
@@ -1132,48 +1190,18 @@ export default function Home() {
               )}
 
 
-              {/* Credential detail */}
+              {/* Credential full-screen preview */}
               {"category" in selectedItem && (
-                <div className="credential-detail-content">
-
-                  <div className="section-index">
-                    {selectedItem.number} /{" "}
-                    {selectedItem.category}
+                <>
+                  <div className="certificate-lightbox-image">
+                    {selectedItem.image ? <img src={selectedItem.image} alt={`${selectedItem.title} certificate`} /> : <span className="credential-card-fallback"><strong>{selectedItem.issuer}</strong><span>Certificate of completion</span><small>{selectedItem.title}</small></span>}
                   </div>
-
-                  <h2>
-                    {selectedItem.title}
-                  </h2>
-
-                  <div className="credential-detail-meta">
-
-                    <span>
-                      <b>issuer</b> /{" "}
-                      {selectedItem.issuer}
-                    </span>
-
-                    <span>
-                      <b>year</b> /{" "}
-                      {selectedItem.year}
-                    </span>
-
-                    <span>
-                      <b>record</b> /{" "}
-                      {selectedItem.code}
-                    </span>
-
+                  <div className="certificate-lightbox-caption">
+                    <span>{selectedItem.category}</span>
+                    <h2>{selectedItem.title}</h2>
+                    <p>{selectedItem.issuer}{selectedItem.year && <> <i aria-hidden="true">•</i> {selectedItem.year}</>}</p>
                   </div>
-
-                  <p>
-                    {selectedItem.verify}
-                  </p>
-
-                  <div className="credential-detail-status">
-                    <span className="status-dot" />
-                    {selectedItem.status}
-                  </div>
-
-                </div>
+                </>
               )}
 
             </article>

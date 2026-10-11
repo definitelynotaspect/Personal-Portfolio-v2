@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
-  ArrowLeft,
   ArrowUpRight,
   Award,
   FolderKanban,
@@ -15,12 +14,11 @@ import {
   X,
   ExternalLink,
 } from "lucide-react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { projects } from "./Home";
 import { switchThemeWithWave } from "../theme";
 
 export default function Projects() {
-  const [, setLocation] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [theme, setTheme] = useState<"light" | "dark">(
@@ -123,28 +121,10 @@ export default function Projects() {
             <small>{String(projects.length).padStart(2, "0")}</small>
           </Link>
 
-          <Link className="rail-link" href="/projects">
-            <FolderKanban size={16} strokeWidth={1.7} />
-            <span>Services / freelance</span>
-            <small>06</small>
-          </Link>
-
-          <Link className="rail-link" href="/about">
-            <UserRound size={16} strokeWidth={1.7} />
-            <span>Personal</span>
-            <small>07</small>
-          </Link>
-
-          <Link className="rail-link" href="/#contact">
-            <Mail size={16} strokeWidth={1.7} />
-            <span>Contact</span>
-            <small>08</small>
-          </Link>
-
           <Link className="rail-link" href="/credentials">
             <Award size={16} strokeWidth={1.7} />
             <span>Credentials</span>
-            <small>09</small>
+            <small>06</small>
           </Link>
 
         </nav>
@@ -194,21 +174,6 @@ export default function Projects() {
       {/* PAGE CONTENT */}
       <div className="page-content">
         <button className="mobile-page-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation menu"><Menu size={20} /></button>
-        <header className="credentials-page-header container">
-          <button
-            className="credentials-back"
-            type="button"
-            onClick={() => setLocation("/#projects")}
-          >
-            <ArrowLeft size={16} />
-            Back to portfolio
-          </button>
-
-          <span className="credentials-page-mark">
-            BJAY DUQUE / SELECTED WORK
-          </span>
-        </header>
-
         <main className="projects-page container">
           <div className="projects-page-heading">
             <h1>Projects</h1>

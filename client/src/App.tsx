@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Credentials from "./pages/Credentials";
 import Projects from "./pages/Projects";
+import TechStack from "./pages/TechStack";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation } from "wouter";
 import PortfolioRail, { MobileRailToggle } from "./components/PortfolioRail";
@@ -14,10 +15,11 @@ export default function App() {
   const [theme, setTheme] = useState<"light" | "dark">(
     () => (localStorage.getItem("barong-theme") as "light" | "dark") || "dark",
   );
-  const activePage = location === "/about" ? "about" : location === "/credentials" ? "credentials" : location === "/projects" ? "projects" : "home";
+  const activePage = location === "/about" ? "about" : location === "/tech-stack" ? "tech" : location === "/credentials" ? "credentials" : location === "/projects" ? "projects" : "home";
 
   useEffect(() => {
     const titles = {
+      tech: "Tech Stack | Bjay Duque",
       home: "Bjay Duque — Personal Portfolio",
       about: "About Me — Bjay Duque",
       projects: "Projects — Bjay Duque",
@@ -31,7 +33,7 @@ export default function App() {
     localStorage.setItem("barong-theme", theme);
   }, [theme]);
 
-  const page = activePage === "about" ? <About /> : activePage === "credentials" ? <Credentials /> : activePage === "projects" ? <Projects /> : <Home />;
+  const page = activePage === "about" ? <About /> : activePage === "tech" ? <TechStack /> : activePage === "credentials" ? <Credentials /> : activePage === "projects" ? <Projects /> : <Home />;
 
   return <>
     <PortfolioRail activePage={activePage} menuOpen={menuOpen} onMenuOpenChange={setMenuOpen} theme={theme} onThemeToggle={(event) => {

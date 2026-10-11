@@ -1,6 +1,5 @@
 import { useLayoutEffect, useState } from "react";
 import {
-  ArrowLeft,
   ArrowUpRight,
   Award,
   FolderKanban,
@@ -14,12 +13,11 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { certifications, projects } from "./Home";
 import { switchThemeWithWave } from "../theme";
 
 export default function About() {
-  const [, setLocation] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">(
     () => (localStorage.getItem("barong-theme") as "light" | "dark") || "dark",
@@ -48,10 +46,7 @@ export default function About() {
           <Link className="rail-link" href="/#tech-stack"><FolderKanban size={16} strokeWidth={1.7} /><span>Tech stack</span><small>03</small></Link>
           <Link className="rail-link" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>Experience</span><small>04</small></Link>
           <Link className="rail-link" href="/projects"><FolderKanban size={16} strokeWidth={1.7} /><span>Projects</span><small>{String(projects.length).padStart(2, "0")}</small></Link>
-          <Link className="rail-link" href="/projects"><FolderKanban size={16} strokeWidth={1.7} /><span>Services / freelance</span><small>06</small></Link>
-          <Link className="rail-link" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>Personal</span><small>07</small></Link>
-          <Link className="rail-link" href="/#contact"><Mail size={16} strokeWidth={1.7} /><span>Contact</span><small>08</small></Link>
-          <Link className="rail-link" href="/credentials"><Award size={16} strokeWidth={1.7} /><span>Credentials</span><small>{String(certifications.length).padStart(2, "0")}</small></Link>
+          <Link className="rail-link" href="/credentials"><Award size={16} strokeWidth={1.7} /><span>Credentials</span><small>06</small></Link>
         </nav>
         <div className="rail-footer">
           <span><i /> Available for thoughtful work</span>
@@ -70,13 +65,6 @@ export default function About() {
 
       <div className="page-content">
         <button className="mobile-page-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation menu"><Menu size={20} /></button>
-        <header className="credentials-page-header container">
-          <button className="credentials-back" type="button" onClick={() => setLocation("/")}>
-            <ArrowLeft size={16} /> Back to portfolio
-          </button>
-          <span className="credentials-page-mark">BJAY DUQUE / ABOUT</span>
-        </header>
-
         <main className="about-page container">
           <header className="about-page-intro">
             <p className="section-index">002 / ABOUT THE BUILDER</p>

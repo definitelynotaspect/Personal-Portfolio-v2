@@ -1,25 +1,41 @@
-import { useLayoutEffect, useState } from "react";
-import { ArrowLeft, ArrowUpRight, Award, BadgeCheck, FolderKanban, Github, House, Linkedin, Mail, Menu, Moon, Sun, UserRound, X } from "lucide-react";
-import { Link, useLocation } from "wouter";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { ArrowUpRight, Award, FolderKanban, Github, House, Linkedin, Mail, Menu, Moon, Search, Sun, UserRound, X } from "lucide-react";
+import { Link } from "wouter";
 import { certifications } from "./Home";
 import { switchThemeWithWave } from "../theme";
 
 export default function Credentials() {
-  const [, setLocation] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">(
     () => (localStorage.getItem("barong-theme") as "light" | "dark") || "dark",
   );
+  const [selectedCredential, setSelectedCredential] = useState<(typeof certifications)[number] | null>(null);
 
   useLayoutEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("barong-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (!selectedCredential) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedCredential(null);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [selectedCredential]);
+
   const credentialGroups = [
-    { label: "Academic recognition", items: certifications.filter((item) => ["01", "02"].includes(item.number)) },
-    { label: "Technical learning", items: certifications.filter((item) => ["03", "04", "05"].includes(item.number)) },
-    { label: "Development & systems", items: certifications.filter((item) => ["06", "07", "08", "09"].includes(item.number)) },
+    { number: "01", label: "Academic recognition", items: certifications.filter((item) => ["01", "02"].includes(item.number)) },
+    { number: "02", label: "Technical learning", items: certifications.filter((item) => ["03", "04", "05", "10", "11", "12"].includes(item.number)) },
+    { number: "03", label: "Development & systems", items: certifications.filter((item) => ["06", "07", "08", "09"].includes(item.number)) },
   ];
 
   return (
@@ -40,10 +56,7 @@ export default function Credentials() {
           <Link className="rail-link" href="/#tech-stack"><FolderKanban size={16} strokeWidth={1.7} /><span>Tech stack</span><small>03</small></Link>
           <Link className="rail-link" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>Experience</span><small>04</small></Link>
           <Link className="rail-link" href="/projects"><FolderKanban size={16} strokeWidth={1.7} /><span>Projects</span><small>05</small></Link>
-          <Link className="rail-link" href="/projects"><FolderKanban size={16} strokeWidth={1.7} /><span>Services / freelance</span><small>06</small></Link>
-          <Link className="rail-link" href="/about"><UserRound size={16} strokeWidth={1.7} /><span>Personal</span><small>07</small></Link>
-          <Link className="rail-link" href="/#contact"><Mail size={16} strokeWidth={1.7} /><span>Contact</span><small>08</small></Link>
-          <Link className="rail-link active" href="/credentials"><Award size={16} strokeWidth={1.7} /><span>Credentials</span><small>{String(certifications.length).padStart(2, "0")}</small></Link>
+          <Link className="rail-link active" href="/credentials"><Award size={16} strokeWidth={1.7} /><span>Credentials</span><small>06</small></Link>
         </nav>
         <div className="rail-footer">
           <span><i /> Available for thoughtful work</span>
@@ -62,19 +75,6 @@ export default function Credentials() {
 
       <div className="page-content">
       <button className="mobile-page-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation menu"><Menu size={20} /></button>
-      <header className="credentials-page-header container">
-        <button
-          className="credentials-back"
-          type="button"
-          onClick={() => setLocation("/#certifications")}
-        >
-          <ArrowLeft size={16} />
-          Back to portfolio
-        </button>
-
-        <span className="credentials-page-mark">BJAY DUQUE / RECORDS</span>
-      </header>
-
       <main className="credentials-page container">
         <div className="credentials-page-heading">
           <div>
@@ -90,23 +90,33 @@ export default function Credentials() {
           {credentialGroups.map((group) => (
             <section className="credential-group" key={group.label}>
               <div className="credential-group-label">
-                <span>{group.label}</span>
+                <span>{group.number} — {group.label}</span>
                 <small>{String(group.items.length).padStart(2, "0")} records</small>
               </div>
               <div className="credential-card-grid">
                 {group.items.map((item) => (
-                  <a
+                  <div
                     className="credential-card"
-                    href={item.credentialUrl ?? item.image}
-                    target="_blank"
-                    rel="noreferrer"
                     key={item.number}
                   >
-                    <span className="credential-card-icon"><BadgeCheck size={22} /></span>
+                    <button className="credential-card-preview" type="button" onClick={() => setSelectedCredential(item)} aria-label={`View ${item.title} certificate`}>
+                      <span className="credential-card-certificate">
+                      {item.image ? (
+                        <img src={item.image} alt={`${item.title} certificate`} loading="lazy" />
+                      ) : (
+                        <span className="credential-card-fallback" aria-label={`${item.title} certificate preview`}>
+                          <strong>{item.issuer}</strong>
+                          <span>Certificate of completion</span>
+                          <small>{item.title}</small>
+                        </span>
+                      )}
+                      <span className="credential-card-zoom" aria-hidden="true"><Search size={15} /></span>
+                      </span>
+                    </button>
                     <h2>{item.title}</h2>
-                    <p>{item.issuer}</p>
-                    <span className="credential-card-verify">&lt; verify &gt; <ArrowUpRight size={13} /></span>
-                  </a>
+                    <p>{item.issuer}{item.year && <><span aria-hidden="true"> • </span>{item.year}</>}</p>
+                    <a className="credential-card-verify" href={item.credentialUrl ?? item.image} target="_blank" rel="noreferrer">&lt; verify certificate &gt; <ArrowUpRight size={13} /></a>
+                  </div>
                 ))}
               </div>
             </section>
@@ -114,6 +124,20 @@ export default function Credentials() {
         </div>
       </main>
       </div>
+
+      {selectedCredential && (
+        <div className="certificate-lightbox" role="presentation" onClick={() => setSelectedCredential(null)}>
+          <article className="certificate-lightbox-panel" role="dialog" aria-modal="true" aria-label={`${selectedCredential.title} certificate`} onClick={(event) => event.stopPropagation()}>
+            <button className="certificate-lightbox-close" type="button" onClick={() => setSelectedCredential(null)} aria-label="Close certificate preview"><X size={20} /></button>
+            <div className="certificate-lightbox-image">
+              {selectedCredential.image ? <img src={selectedCredential.image} alt={`${selectedCredential.title} certificate`} /> : <span className="credential-card-fallback"><strong>{selectedCredential.issuer}</strong><span>Certificate of completion</span><small>{selectedCredential.title}</small></span>}
+            </div>
+            <div className="certificate-lightbox-caption">
+              <h2>{selectedCredential.title}</h2>
+            </div>
+          </article>
+        </div>
+      )}
     </div>
   );
 }
